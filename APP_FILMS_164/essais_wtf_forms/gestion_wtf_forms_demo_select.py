@@ -33,13 +33,13 @@ from APP_FILMS_164.essais_wtf_forms.wtf_forms_demo_select import DemoFormSelectW
 @app.route("/demo_select_wtf", methods=['GET', 'POST'])
 def demo_select_wtf():
     genre_selectionne = None
-    # Objet formulaire pour montrer une liste déroulante basé su    r la table "t_genre"
+    # Objet formulaire pour montrer une liste déroulante basé su    r la table "t_entrepot"
     form_demo = DemoFormSelectWTF()
     try:
-        print("form_demo.submit_btn_ok_dplist_genre.data  ", form_demo.submit_btn_ok_dplist_genre.data)
-        if request.method == "POST" and form_demo.submit_btn_ok_dplist_genre.data:
+        print("form_demo.submit_btn_ok_dplist_entrepot.data  ", form_demo.submit_btn_ok_dplist_entrepot.data)
+        if request.method == "POST" and form_demo.submit_btn_ok_dplist_entrepot.data:
 
-            if form_demo.submit_btn_ok_dplist_genre.data:
+            if form_demo.submit_btn_ok_dplist_entrepot.data:
                 print("Genre sélectionné : ",
                       form_demo.genres_dropdown_wtf.data)
                 genre_selectionne = form_demo.genres_dropdown_wtf.data
@@ -53,7 +53,7 @@ def demo_select_wtf():
 
         if request.method == "GET":
             with DBconnection() as mc_afficher:
-                strsql_genres_afficher = """SELECT id_genre, intitule_genre FROM t_genre ORDER BY id_genre ASC"""
+                strsql_genres_afficher = """SELECT IDEntrepot, EntrepotNom FROM t_entrepot ORDER BY IDEntrepot ASC"""
                 mc_afficher.execute(strsql_genres_afficher)
 
             data_genres = mc_afficher.fetchall()
@@ -67,10 +67,10 @@ def demo_select_wtf():
             """
             genre_val_list_dropdown = []
             for i in data_genres:
-                genre_val_list_dropdown.append(i['intitule_genre'])
+                genre_val_list_dropdown.append(i['EntrepotNom'])
 
             # Aussi possible d'avoir un id numérique et un texte en correspondance
-            # genre_val_list_dropdown = [(i["id_genre"], i["intitule_genre"]) for i in data_genres]
+            # genre_val_list_dropdown = [(i["IDEntrepot"], i["EntrepotNom"]) for i in data_genres]
 
             print("genre_val_list_dropdown ", genre_val_list_dropdown)
 
