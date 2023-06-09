@@ -5,16 +5,30 @@
 	<div class="row">
 		<div class="col-md-12">
 			<p>
-				Ajouter un nouveau GENRE (WTForms)
+				Ajouter un nouvelle Entrepôt (WTForms)
 			</p>
 			<form action="" method="POST" novalidate>
 				<!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
 				{{ form.hidden_tag() }}
 				<div class="form-group">
 					<p>
-						{{ form.nom_genre_wtf.label }}<br>
-						{{ form.nom_genre_wtf(size=32) }}<br>
-						{% for error in form.nom_genre_wtf.errors %}
+						{{ form.IDLo_wtf.label }}<br>
+						{{ form.IDLo_wtf(size=32) }}<br>
+						{% for error in form.IDLo_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+					<p>
+						{{ form.EntrepotNom_wtf.label }}<br>
+						{{ form.EntrepotNom_wtf(size=32) }}<br>
+						{% for error in form.EntrepotNom_wtf.errors %}
+							<span style="color: red;">[{{ error }}]</span>
+						{% endfor %}
+					</p>
+					<p>
+						{{ form.EntrepotAdresse_wtf.label }}<br>
+						{{ form.EntrepotAdresse_wtf(size=32) }}<br>
+						{% for error in form.EntrepotAdresse_wtf.errors %}
 							<span style="color: red;">[{{ error }}]</span>
 						{% endfor %}
 					</p>

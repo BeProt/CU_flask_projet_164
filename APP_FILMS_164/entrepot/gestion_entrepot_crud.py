@@ -12,15 +12,15 @@ from flask import url_for
 from APP_FILMS_164 import app
 from APP_FILMS_164.database.database_tools import DBconnection
 from APP_FILMS_164.erreurs.exceptions import *
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFAjouterGenres
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFDeleteGenre
-from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateGenre
+from APP_FILMS_164.entrepot.gestion_entrepot_wtf_forms import FormWTFAjouterEntrepot
+from APP_FILMS_164.entrepot.gestion_entrepot_wtf_forms import FormWTFDeleteEntrepot
+from APP_FILMS_164.entrepot.gestion_entrepot_wtf_forms import FormWTFUpdateEntrepot
 
 """
     Auteur : OM 2021.03.16
-    Définition d'une "route" /genres_afficher
+    Définition d'une "route" /entrepot_afficher
     
-    Test : ex : http://127.0.0.1:5575/genres_afficher
+    Test : ex : http://127.0.0.1:5575/entrepot_afficher
     
     Paramètres : order_by : ASC : Ascendant, DESC : Descendant
                 IDEntrepot_sel = 0 >> tous les genres.
@@ -28,14 +28,14 @@ from APP_FILMS_164.genres.gestion_genres_wtf_forms import FormWTFUpdateGenre
 """
 
 
-@app.route("/genres_afficher/<string:order_by>/<int:IDEntrepot_sel>", methods=['GET', 'POST'])
-def genres_afficher(order_by, IDEntrepot_sel):
+@app.route("/entrepot_afficher/<string:order_by>/<int:IDEntrepot_sel>", methods=['GET', 'POST'])
+def entrepot_afficher(order_by, IDEntrepot_sel):
     if request.method == "GET":
         try:
             with DBconnection() as mc_afficher:
                 if order_by == "ASC" and IDEntrepot_sel == 0:
-                    strsql_genres_afficher = """SELECT * FROM t_entrepot"""
-                    mc_afficher.execute(strsql_genres_afficher)
+                    strsql_entrepot_afficher = """SELECT * FROM t_entrepot"""
+                    mc_afficher.execute(strsql_entrepot_afficher)
                 elif order_by == "ASC":
                     # C'EST LA QUE VOUS ALLEZ DEVOIR PLACER VOTRE PROPRE LOGIQUE MySql
                     # la commande MySql classique est "SELECT * FROM t_entrepot"
@@ -43,13 +43,13 @@ def genres_afficher(order_by, IDEntrepot_sel):
                     # donc, je précise les champs à afficher
                     # Constitution d'un dictionnaire pour associer l'id du genre sélectionné avec un nom de variable
                     valeur_IDEntrepot_selected_dictionnaire = {"value_IDEntrepot_selected": IDEntrepot_sel}
-                    strsql_genres_afficher = """SELECT * FROM t_entrepot WHERE id_adresse = %(value_IDEntrepot_selected)s"""
+                    strsql_entrepot_afficher = """SELECT * FROM t_entrepot WHERE id_adresse = %(value_IDEntrepot_selected)s"""
 
-                    mc_afficher.execute(strsql_genres_afficher, valeur_IDEntrepot_selected_dictionnaire)
+                    mc_afficher.execute(strsql_entrepot_afficher, valeur_IDEntrepot_selected_dictionnaire)
                 else:
-                    strsql_genres_afficher = """SELECT * FROM t_entrepot"""
+                    strsql_entrepot_afficher = """SELECT * FROM t_entrepot"""
 
-                    mc_afficher.execute(strsql_genres_afficher)
+                    mc_afficher.execute(strsql_entrepot_afficher)
 
                 data_genres = mc_afficher.fetchall()
 
@@ -66,13 +66,13 @@ def genres_afficher(order_by, IDEntrepot_sel):
                     # OM 2020.04.09 La ligne ci-dessous permet de donner un sentiment rassurant aux utilisateurs.
                     flash(f"Données Entrepôts affichés !!", "success")
 
-        except Exception as Exception_genres_afficher:
+        except Exception as Exception_entrepot_afficher:
             raise ExceptionGenresAfficher(f"fichier : {Path(__file__).name}  ;  "
-                                          f"{genres_afficher.__name__} ; "
-                                          f"{Exception_genres_afficher}")
+                                          f"{entrepot_afficher.__name__} ; "
+                                          f"{Exception_entrepot_afficher}")
 
     # Envoie la page "HTML" au serveur.
-    return render_template("genres/genres_afficher.html", data=data_genres)
+    return render_template("entrepot/entrepot_afficher.html", data=data_genres)
 
 
 """
@@ -95,18 +95,27 @@ def genres_afficher(order_by, IDEntrepot_sel):
 """
 
 
-@app.route("/genres_ajouter", methods=['GET', 'POST'])
-def genres_ajouter_wtf():
-    form = FormWTFAjouterGenres()
+@app.route("/entrepot_ajouter", methods=['GET', 'POST'])
+def entrepot_ajouter_wtf():
+    form = FormWTFAjouterEntrepot()
     if request.method == "POST":
         try:
             if form.validate_on_submit():
-                name_genre_wtf = form.nom_genre_wtf.data
-                name_genre = name_genre_wtf.lower()
-                valeurs_insertion_dictionnaire = {"value_EntrepotNom": name_genre}
+                IDLo_wtf = form.IDLo_wtf.data
+                EntrepotNom_wtf = form.EntrepotNom_wtf.data
+                EntrepotAdresse_wtf = form.EntrepotAdresse_wtf.data
+
+                valeurs_insertion_dictionnaire = {
+                    "value_IDLo": IDLo_wtf,
+                    "value_EntrepotNom": EntrepotNom_wtf,
+                    "value_EntrepotAdresse": EntrepotAdresse_wtf,
+                }
+
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
 
-                strsql_insert_entrepot = """INSERT INTO t_entrepot (IDEntrepot,EntrepotNom) VALUES (NULL,%(value_EntrepotNom)s) """
+                strsql_insert_entrepot = """INSERT INTO t_entrepot (IDLo, EntrepotNom, EntrepotAdresse) VALUES (NULL, %(value_EntrepotNom)s, 
+                (SELECT IDLo FROM t_localite WHERE IDLo = %(value_localite_entrepot)s))"""
+
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(strsql_insert_entrepot, valeurs_insertion_dictionnaire)
 
@@ -114,27 +123,28 @@ def genres_ajouter_wtf():
                 print(f"Données insérées !!")
 
                 # Pour afficher et constater l'insertion de la valeur, on affiche en ordre inverse. (DESC)
-                return redirect(url_for('genres_afficher', order_by='DESC', IDEntrepot_sel=0))
+                return redirect(url_for('entrepot_afficher', order_by='DESC', IDEntrepot_sel=0))
 
         except Exception as Exception_genres_ajouter_wtf:
             raise ExceptionGenresAjouterWtf(f"fichier : {Path(__file__).name}  ;  "
-                                            f"{genres_ajouter_wtf.__name__} ; "
+                                            f"{entrepot_ajouter_wtf.__name__} ; "
                                             f"{Exception_genres_ajouter_wtf}")
 
-    return render_template("genres/genres_ajouter_wtf.html", form=form)
+
+    return render_template("entrepot/entrepot_ajouter_wtf.html", form=form)
 
 
 """
     Auteur : OM 2021.03.29
-    Définition d'une "route" /genre_update
+    Définition d'une "route" /entrepot_update
     
     Test : ex cliquer sur le menu "genres" puis cliquer sur le bouton "EDIT" d'un "genre"
     
     Paramètres : sans
     
-    But : Editer(update) un genre qui a été sélectionné dans le formulaire "genres_afficher.html"
+    But : Editer(update) un genre qui a été sélectionné dans le formulaire "entrepot_afficher.html"
     
-    Remarque :  Dans le champ "nom_genre_update_wtf" du formulaire "genres/genre_update_wtf.html",
+    Remarque :  Dans le champ "nom_entrepot_update_wtf" du formulaire "genres/entrepot_update_wtf.html",
                 le contrôle de la saisie s'effectue ici en Python.
                 On transforme la saisie en minuscules.
                 On ne doit pas accepter des valeurs vides, des valeurs avec des chiffres,
@@ -144,17 +154,17 @@ def genres_ajouter_wtf():
 """
 
 
-@app.route("/genre_update", methods=['GET', 'POST'])
-def genre_update_wtf():
+@app.route("/entrepot_update", methods=['GET', 'POST'])
+def entrepot_update_wtf():
     # L'utilisateur vient de cliquer sur le bouton "EDIT". Récupère la valeur de "IDEntrepot"
     IDEntrepot_update = request.values['IDEntrepot_btn_edit_html']
 
     # Objet formulaire pour l'UPDATE
-    form_update = FormWTFUpdateGenre()
+    form_update = FormWTFUpdateEntrepot()
     try:
         print(" on submit ", form_update.validate_on_submit())
         if form_update.validate_on_submit():
-            # Récupèrer la valeur du champ depuis "genre_update_wtf.html" après avoir cliqué sur "SUBMIT".
+            # Récupèrer la valeur du champ depuis "entrepot_update_wtf.html" après avoir cliqué sur "SUBMIT".
             # Puis la convertir en lettres minuscules.
             name_Entrepot_update = form_update.nom_Entrepot_update_wtf.data
             # name_Entrepot_update = name_Entrepot_update.lower()
@@ -176,7 +186,7 @@ def genre_update_wtf():
 
             # afficher et constater que la donnée est mise à jour.
             # Affiche seulement la valeur modifiée, "ASC" et l'"IDEntrepot_update"
-            return redirect(url_for('genres_afficher', order_by="ASC", IDEntrepot_sel=IDEntrepot_update))
+            return redirect(url_for('entrepot_afficher', order_by="ASC", IDEntrepot_sel=IDEntrepot_update))
         elif request.method == "GET":
             # Opération sur la BD pour récupérer "IDEntrepot" et "EntrepotNom" de la "t_entrepot"
             str_sql_IDEntrepot = "SELECT IDEntrepot, EntrepotNom, EntrepotAdresse FROM t_entrepot " \
@@ -189,16 +199,16 @@ def genre_update_wtf():
             print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
                   data_nom_genre["EntrepotNom"])
 
-            # Afficher la valeur sélectionnée dans les champs du formulaire "genre_update_wtf.html"
-            form_update.nom_genre_update_wtf.data = data_nom_genre["EntrepotNom"]
+            # Afficher la valeur sélectionnée dans les champs du formulaire "entrepot_update_wtf.html"
+            form_update.nom_entrepot_update_wtf.data = data_nom_genre["EntrepotNom"]
             form_update.date_genre_wtf_essai.data = data_nom_genre["EntrepotAdresse"]
 
-    except Exception as Exception_genre_update_wtf:
+    except Exception as Exception_entrepot_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{genre_update_wtf.__name__} ; "
-                                      f"{Exception_genre_update_wtf}")
+                                      f"{entrepot_update_wtf.__name__} ; "
+                                      f"{Exception_entrepot_update_wtf}")
 
-    return render_template("genres/genre_update_wtf.html", form_update=form_update)
+    return render_template("entrepot/entrepot_update_wtf.html", form_update=form_update)
 
 
 """
@@ -209,28 +219,28 @@ def genre_update_wtf():
     
     Paramètres : sans
     
-    But : Effacer(delete) un genre qui a été sélectionné dans le formulaire "genres_afficher.html"
+    But : Effacer(delete) un genre qui a été sélectionné dans le formulaire "entrepot_afficher.html"
     
     Remarque :  Dans le champ "nom_genre_delete_wtf" du formulaire "genres/genre_delete_wtf.html",
                 le contrôle de la saisie est désactivée. On doit simplement cliquer sur "DELETE"
 """
 
 
-@app.route("/genre_delete", methods=['GET', 'POST'])
-def genre_delete_wtf():
+@app.route("/entrepot_delete", methods=['GET', 'POST'])
+def entrepot_delete_wtf():
     data_films_attribue_genre_delete = None
     btn_submit_del = None
     # L'utilisateur vient de cliquer sur le bouton "DELETE". Récupère la valeur de "IDEntrepot"
     IDEntrepot_delete = request.values['IDEntrepot_btn_delete_html']
 
     # Objet formulaire pour effacer le genre sélectionné.
-    form_delete = FormWTFDeleteGenre()
+    form_delete = FormWTFDeleteEntrepot()
     try:
         print(" on submit ", form_delete.validate_on_submit())
         if request.method == "POST" and form_delete.validate_on_submit():
 
             if form_delete.submit_btn_annuler.data:
-                return redirect(url_for("genres_afficher", order_by="ASC", IDEntrepot_sel=0))
+                return redirect(url_for("entrepot_afficher", order_by="ASC", IDEntrepot_sel=0))
 
             if form_delete.submit_btn_conf_del.data:
                 # Récupère les données afin d'afficher à nouveau
@@ -259,7 +269,7 @@ def genre_delete_wtf():
                 print(f"Genre définitivement effacé !!")
 
                 # afficher les données
-                return redirect(url_for('genres_afficher', order_by="ASC", IDEntrepot_sel=0))
+                return redirect(url_for('entrepot_afficher', order_by="ASC", IDEntrepot_sel=0))
 
         if request.method == "GET":
             valeur_select_dictionnaire = {"value_IDEntrepot": IDEntrepot_delete}
@@ -298,10 +308,10 @@ def genre_delete_wtf():
 
     except Exception as Exception_genre_delete_wtf:
         raise ExceptionGenreDeleteWtf(f"fichier : {Path(__file__).name}  ;  "
-                                      f"{genre_delete_wtf.__name__} ; "
+                                      f"{entrepot_delete_wtf.__name__} ; "
                                       f"{Exception_genre_delete_wtf}")
 
-    return render_template("genres/genre_delete_wtf.html",
+    return render_template("entrepot/entrepot_delete_wtf.html",
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del,
                            data_films_associes=data_films_attribue_genre_delete)
