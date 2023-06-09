@@ -15,7 +15,7 @@ class FormWTFAjouterEntrepot(FlaskForm):
         Dans le formulaire "genres_ajouter_wtf.html" on impose que le champ soit rempli.
         Définition d'un "bouton" submit avec un libellé personnalisé.
     """
-    IDLo_regexp = "^([A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
+    IDLo_regexp = "^([0-9][A-Z]|[a-zÀ-ÖØ-öø-ÿ])[A-Za-zÀ-ÖØ-öø-ÿ]*['\- ]?[A-Za-zÀ-ÖØ-öø-ÿ]+$"
     IDLo_wtf = StringField("Clavioter l'ID de la localité ", validators=[Length(min=0, max=20, message="min 0 max 20"),
                                                                      Regexp(IDLo_regexp,
                                                                             message="Pas de chiffres, de caractères "
