@@ -34,7 +34,7 @@ INSERT INTO `t_categorie` (`IDCate`, `CateNom`) VALUES
 	(2, 'Vitamines'),
 	(3, 'Vêtements & Accessoires');
 
--- Listage de la structure de table unger_corentin_i164_info1a. t_commande
+-- Listage de la structure de table unger_corentin_i164_info1a. t_commande...
 DROP TABLE IF EXISTS `t_commande`;
 CREATE TABLE IF NOT EXISTS `t_commande` (
   `IDCom` int NOT NULL AUTO_INCREMENT,

@@ -68,7 +68,7 @@ class FormWTFUpdateEntrepot(FlaskForm):
                                                                                          "apostrophe, de double trait "
                                                                                          "union")
                                                                           ])
-    # date_genre_wtf_essai = DateField("Essai date", validators=[InputRequired("Date obligatoire"),
+    # date_genre_wtf_essai = DateField("Essai date", validators=[InputRequired("Date obligatoire"),...
     #                                                            DataRequired("Date non valide")])
     submit = SubmitField("Update genre")
 

@@ -286,7 +286,7 @@ def entrepot_delete_wtf():
                 data_films_attribue_genre_delete = mydb_conn.fetchall()
                 print("data_films_attribue_genre_delete...", data_films_attribue_genre_delete)
 
-                # Nécessaire pour mémoriser les données afin d'afficher à nouveau
+                # Nécessaire pour mémoriser les données afin d'afficher à nouveau...
                 # le formulaire "genres/genre_delete_wtf.html" lorsque le bouton "Etes-vous sur d'effacer ?" est cliqué.
                 session['data_films_attribue_genre_delete'] = data_films_attribue_genre_delete
 
