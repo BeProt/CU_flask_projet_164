@@ -2,13 +2,13 @@
 {% block title %} Afficher GENRES {% endblock %}
 {% block body %}
 <div class="container">
-	<div class="row">
-		<div class="col-md-12">
-			<p>
-				Categories
-			</p>
+    <div class="row justify-content-center"> <!-- Ajout de "justify-content-center" pour centrer le contenu -->
+        <div class="col-md-12">
+            <p>
+                Categories
+            </p>
             <table class="table table-bordered table-sm">
-            {% if data %}
+                {% if data %}
                 <thead>
                     <tr>
                         <th class="align-middle">
@@ -20,51 +20,50 @@
                         <th class="align-middle">
 
                         </th>
-						<th class="align-middle">
+                        <th class="align-middle">
 
                         </th>
-						<th class="align-middle">
+                        <th class="align-middle">
 
                         </th>
                     </tr>
                 </thead>
-            {% endif %}
+                {% endif %}
 
-            {% for row in data %}
-				<tbody>
-					<tr>
-						<td class="align-middle">
-							{{ row.IDCate }}
-						</td>
-						<td class="align-middle">
-							{{ row.CateNom }}
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-primary" href="{{ url_for('categorie_ajouter_wtf') }}" role="button">Ajouter</a>
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-warning" href="{{ url_for('categorie_update_wtf', IDEntrepot_btn_edit_html=row.IDEntrepot) }}" role="button">Edit</a>
-						</td>
-						<td class="text-center" class="align-middle">
-							<a class="btn btn-danger" href="{{ url_for('categorie_delete_wtf', IDEntrepot_btn_delete_html=row.IDEntrepot) }}" role="button">Delete</a>
-						</td>
-					</tr>
-				</tbody>
-            {% else %}
-				<tbody>
-					<tr>
-						<td>
-							Aucun genre.
-						</td>
-						<td>
-							<a class="btn btn-primary" href="{{ url_for('categorie_ajouter_wtf') }}" role="button">Ajouter</a>
-						</td>
-					</tr>
-				</tbody>
-            {% endfor %}
-			</table>
-		</div>
-	</div>
+                {% for row in data %}
+                <tbody>
+                    <tr>
+                        <td class="align-middle">
+                            {{ row.IDCate }}
+                        </td>
+                        <td class="align-middle">
+                            {{ row.CateNom }}
+                        </td>
+                        <td class="text-center" class="align-middle">
+                            <a class="btn btn-primary" href="{{ url_for('categorie_ajouter_wtf') }}" role="button">Ajouter</a>
+                        </td>
+                        <td class="text-center" class="align-middle">
+                            <a class="btn btn-warning" href="{{ url_for('categorie_update_wtf', IDCate_btn_edit_html=row.IDEntrepot) }}" role="button">Edit</a>
+                        </td>
+                        <td class="text-center" class="align-middle">
+                            <a class="btn btn-danger" href="{{ url_for('categorie_delete_wtf', IDCate_btn_delete_html=row.IDEntrepot) }}" role="button">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+                {% else %}
+                <tbody>
+                    <tr>
+                        <td>
+                            Aucune categories
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" href="{{ url_for('categorie_ajouter_wtf') }}" role="button">Ajouter</a>
+                        </td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 </div>
 {% endblock %}
-

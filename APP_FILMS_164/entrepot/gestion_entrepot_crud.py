@@ -43,7 +43,7 @@ def entrepot_afficher(order_by, IDEntrepot_sel):
                     # donc, je précise les champs à afficher
                     # Constitution d'un dictionnaire pour associer l'id du genre sélectionné avec un nom de variable
                     valeur_IDEntrepot_selected_dictionnaire = {"value_IDEntrepot_selected": IDEntrepot_sel}
-                    strsql_entrepot_afficher = """SELECT * FROM t_entrepot WHERE id_adresse = %(value_IDEntrepot_selected)s"""
+                    strsql_entrepot_afficher = """SELECT * FROM t_entrepot WHERE EntrepotAdresse = %(value_IDEntrepot_selected)s"""
 
                     mc_afficher.execute(strsql_entrepot_afficher, valeur_IDEntrepot_selected_dictionnaire)
                 else:
@@ -177,7 +177,7 @@ def entrepot_update_wtf():
                                           }
             print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
 
-            str_sql_update_intitulegenre = """UPDATE t_entrepot SET EntrepotNom = %(value_name_genre)s, 
+            str_sql_update_intitulegenre = """UPDATE t_entrepot SET EntrepotNom = %(value_EntrepotNom)s, 
             EntrepotAdresse = %(value_date_genre_essai)s WHERE IDEntrepot = %(value_IDEntrepot)s """
             with DBconnection() as mconn_bd:
                 mconn_bd.execute(str_sql_update_intitulegenre, valeur_update_dictionnaire)
@@ -190,19 +190,19 @@ def entrepot_update_wtf():
             return redirect(url_for('entrepot_afficher', order_by="ASC", IDEntrepot_sel=IDEntrepot_update))
         elif request.method == "GET":
             # Opération sur la BD pour récupérer "IDEntrepot" et "EntrepotNom" de la "t_entrepot"
-            str_sql_IDEntrepot = "SELECT IDEntrepot, EntrepotNom, EntrepotAdresse FROM t_entrepot " \
+            str_sql_IDEntrepot = "SELECT IDEntrepot, IDLo, EntrepotNom, EntrepotAdresse FROM t_entrepot " \
                                "WHERE IDEntrepot = %(value_IDEntrepot)s"
             valeur_select_dictionnaire = {"value_IDEntrepot": IDEntrepot_update}
             with DBconnection() as mybd_conn:
                 mybd_conn.execute(str_sql_IDEntrepot, valeur_select_dictionnaire)
             # Une seule valeur est suffisante "fetchone()", vu qu'il n'y a qu'un seul champ "nom genre" pour l'UPDATE
-            data_nom_genre = mybd_conn.fetchone()
-            print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
-                  data_nom_genre["EntrepotNom"])
+            data_EntrepotNom = mybd_conn.fetchone()
+            print("data_EntrepotNom ", data_EntrepotNom, " type ", type(data_EntrepotNom), " Nom ",
+                  data_EntrepotNom["EntrepotNom"])
 
             # Afficher la valeur sélectionnée dans les champs du formulaire "entrepot_update_wtf.html"
-            form_update.EntrepotNom_wtf.data = data_nom_genre["EntrepotNom"]
-            form_update.nom_Adresse_update_wtf.data = data_nom_genre["EntrepotAdresse"]
+            form_update.EntrepotNom_wtf.data = data_EntrepotNom["EntrepotNom"]
+            form_update.nom_Adresse_update_wtf.data = data_EntrepotNom["EntrepotAdresse"]
 
 
     except Exception as Exception_entrepot_update_wtf:
@@ -259,9 +259,9 @@ def entrepot_delete_wtf():
                 valeur_delete_dictionnaire = {"value_IDEntrepot": IDEntrepot_delete}
                 print("valeur_delete_dictionnaire ", valeur_delete_dictionnaire)
 
-                str_sql_delete_films_genre = """DELETE FROM t_produit_stocker_entrepot WHERE fk_genre = %(value_IDEntrepot)s"""
+                str_sql_delete_films_genre = """DELETE FROM t_produit_stocker_entrepot WHERE FKEntrepot = %(value_IDEntrepot)s"""
                 str_sql_delete_idgenre = """DELETE FROM t_entrepot WHERE IDEntrepot = %(value_IDEntrepot)s"""
-                # Manière brutale d'effacer d'abord la "fk_genre", même si elle n'existe pas dans la "t_produit_stocker_entrepot"
+                # Manière brutale d'effacer d'abord la "FKEntrepot", même si elle n'existe pas dans la "t_produit_stocker_entrepot"
                 # Ensuite on peut effacer le genre vu qu'il n'est plus "lié" (INNODB) dans la "t_produit_stocker_entrepot"
                 with DBconnection() as mconn_bd:
                     mconn_bd.execute(str_sql_delete_films_genre, valeur_delete_dictionnaire)
@@ -298,12 +298,12 @@ def entrepot_delete_wtf():
                 mydb_conn.execute(str_sql_IDEntrepot, valeur_select_dictionnaire)
                 # Une seule valeur est suffisante "fetchone()",
                 # vu qu'il n'y a qu'un seul champ "nom genre" pour l'action DELETE
-                data_nom_genre = mydb_conn.fetchone()
-                print("data_nom_genre ", data_nom_genre, " type ", type(data_nom_genre), " genre ",
-                      data_nom_genre["EntrepotNom"])
+                data_EntrepotNom = mydb_conn.fetchone()
+                print("data_EntrepotNom ", data_EntrepotNom, " type ", type(data_EntrepotNom), " genre ",
+                      data_EntrepotNom["EntrepotNom"])
 
             # Afficher la valeur sélectionnée dans le champ du formulaire "genre_delete_wtf.html"
-            form_delete.nom_genre_delete_wtf.data = data_nom_genre["EntrepotNom"]
+            form_delete.nom_genre_delete_wtf.data = data_EntrepotNom["EntrepotNom"]
 
             # Le bouton pour l'action "DELETE" dans le form. "genre_delete_wtf.html" est caché.
             btn_submit_del = False
@@ -316,4 +316,4 @@ def entrepot_delete_wtf():
     return render_template("entrepot/entrepot_delete_wtf.html",
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del,
-                           data_categorie_associes=data_films_attribue_genre_delete)
+                           data_entrepot_associes=data_films_attribue_genre_delete)

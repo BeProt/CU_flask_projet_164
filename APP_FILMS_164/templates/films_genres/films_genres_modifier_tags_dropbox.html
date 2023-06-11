@@ -44,22 +44,22 @@
                     <thead>
                         <tr>
                             <th class="">
-                                id
+                                ID
                             </th>
                             <th class="">
-                                Titre
+                                ProNom
                             </th>
                             <th class="">
-                                Durée
+                                ProPrixFR
                             </th>
                             <th class="">
-                                Date sortie
+                                ProPrixCH
                             </th>
                             <th class="">
-                                Description
+
                             </th>
                             <th class="">
-                                Affiche
+
                             </th>
                         </tr>
                     </thead>
@@ -75,10 +75,16 @@
 							{{ row.ProNom }}
 						</td>
 						<td class="align-middle">
-							{{ row.date_sortie_film|default("", True) }}
+							{{ row.ProPrixFR }}
 						</td>
-						<td class="align-middle">
-                            <img class="img" src={{ row.cover_link_film|default(None, True) }} style="border: 0;display:block; width:150px; max-height:auto;" alt = "image masquée FFP67 (in COVID-29 Memory) (absente) mod 164">
+                        <td class="align-middle">
+							{{ row.ProPrixCH }}
+						</td>
+                        <td class="align-middle">
+
+						</td>
+                        <td class="align-middle">
+
 						</td>
 					</tr>
 				</tbody>

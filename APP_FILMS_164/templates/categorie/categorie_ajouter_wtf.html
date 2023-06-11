@@ -12,13 +12,6 @@
 				{{ form.hidden_tag() }}
 				<div class="form-group">
 					<p>
-						{{ form.IDCate_wtf.label }}<br>
-						{{ form.IDCate_wtf(size=32) }}<br>
-						{% for error in form.IDCate_wtf.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</p>
-					<p>
 						{{ form.CateNom_wtf.label }}<br>
 						{{ form.CateNom_wtf(size=32) }}<br>
 						{% for error in form.CateNom_wtf.errors %}

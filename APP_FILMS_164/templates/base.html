@@ -38,11 +38,7 @@
 <div class="container">
 	<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-secondary">
 		<div class="container-fluid">
-<a class="navbar-brand" href="{{ url_for('mapageprincipale') }}">
-  <img src="logo.png" alt="Logo de BeProt">
-</a>
-
-
+			<a class="navbar-brand" href="{{ url_for('mapageprincipale') }}">BeProt</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -54,15 +50,15 @@
 					</li>
 					<li class="nav-item">
 						<!--		Afficher la liste des genres dans l'ordre (ASC) et tous les genres (0)-->
-						<a class="nav-link" href="{{ url_for('entrepot_afficher', order_by='ASC', IDEntrepot_sel=0) }}">Entrepôt</a>
+						<a class="nav-link" href="{{ url_for('categorie_afficher', order_by='ASC', IDCate_sel=0) }}">Categories</a>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navdropdownfilms" role="button"
 						   data-bs-toggle="dropdown" aria-expanded="false">
-							Films
+							Produits
 						</a>
 						<ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
-							<li><a class="nav-link" href="{{ url_for('films_genres_afficher', id_film_sel=0) }}">Films</a>
+							<li><a class="nav-link" href="{{ url_for('films_genres_afficher', id_film_sel=0) }}">Produits</a>
 							</li>
 							<li><a class="nav-link" href="{{ url_for('films_genres_afficher', id_film_sel=0) }}">Films/Mail</a></li>
 							<li><a class="nav-link" href="{{ url_for('films_genres_afficher', id_film_sel=0) }}">oui</a></li>

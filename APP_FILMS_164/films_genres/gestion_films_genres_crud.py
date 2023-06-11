@@ -43,10 +43,10 @@ def films_genres_afficher(id_film_sel):
                     mc_afficher.execute(strsql_genres_films_afficher_data)
                 else:
                     # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
-                    valeur_id_film_selected_dictionnaire = {"value_id_film_selected": id_film_sel}
+                    valeur_id_film_selected_dictionnaire = {"value_IDPro_selected": id_film_sel}
                     # En MySql l'instruction HAVING fonctionne comme un WHERE... mais doit être associée à un GROUP BY
                     # L'opérateur += permet de concaténer une nouvelle valeur à la valeur de gauche préalablement définie.
-                    strsql_genres_films_afficher_data += """ HAVING IDPro= %(value_id_film_selected)s"""
+                    strsql_genres_films_afficher_data += """ HAVING IDPro= %(value_IDPro_selected)s"""
 
                     mc_afficher.execute(strsql_genres_films_afficher_data, valeur_id_film_selected_dictionnaire)
 
@@ -110,7 +110,7 @@ def edit_entrepot_film_selected():
             session['session_id_film_genres_edit'] = id_film_genres_edit
 
             # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
-            valeur_id_film_selected_dictionnaire = {"value_id_film_selected": id_film_genres_edit}
+            valeur_id_film_selected_dictionnaire = {"value_IDPro_selected": id_film_genres_edit}
 
             # Récupère les données grâce à 3 requêtes MySql définie dans la fonction genres_films_afficher_data
             # 1) Sélection du film choisi
@@ -222,7 +222,7 @@ def update_genre_film_selected():
             # SQL pour insérer une nouvelle association entre
             # "fk_film"/"IDPro" et "fk_genre"/"IDEntrepot" dans la "t_produit_stocker_entrepot"
             strsql_insert_entrepot_film = """INSERT INTO t_produit_stocker_entrepot (IDProEntrepot, FKPro, FKEntrepot)
-                                                    VALUES (NULL, %(value_FKEntrepot, %(value_FKPro)s)"""
+                                            VALUES (NULL, %(value_FKEntrepot)s, %(value_FKPro)s)"""
 
             # SQL pour effacer une (des) association(s) existantes entre "IDPro" et "IDEntrepot" dans la "t_produit_stocker_entrepot"
             strsql_delete_genre_film = """DELETE FROM t_produit_stocker_entrepot WHERE FKEntrepot = %(value_FKEntrepot)s AND FKPro = %(value_FKPro)s"""
@@ -230,11 +230,12 @@ def update_genre_film_selected():
             with DBconnection() as mconn_bd:
                 # Pour le film sélectionné, parcourir la liste des genres à INSÉRER dans la "t_produit_stocker_entrepot".
                 # Si la liste est vide, la boucle n'est pas parcourue.
-                for IDEntrepot_ins in lst_diff_genres_insert_a:
+                for IDEntrepot in lst_diff_genres_insert_a:
                     # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
-                    # et "IDEntrepot_ins" (l'id du genre dans la liste) associé à une variable.
-                    valeurs_film_sel_genre_sel_dictionnaire = {"value_fk_film": id_film_selected,
-                                                               "value_fk_genre": IDEntrepot_ins}
+                    # et "IDEntrepot" (l'id du genre dans la liste) associé à une variable.
+                    valeurs_film_sel_genre_sel_dictionnaire = {"value_FKPro": FKPro,
+                                                               "value_FKEntrepot": FKEntrepot,
+                                                               "value_IDProEntrepot": IDProEntrepot}
 
                     mconn_bd.execute(strsql_insert_entrepot_film, valeurs_film_sel_genre_sel_dictionnaire)
 
@@ -243,8 +244,9 @@ def update_genre_film_selected():
                 for IDEntrepot_del in lst_diff_genres_delete_b:
                     # Constitution d'un dictionnaire pour associer l'id du film sélectionné avec un nom de variable
                     # et "IDEntrepot_del" (l'id du genre dans la liste) associé à une variable.
-                    valeurs_film_sel_genre_sel_dictionnaire = {"value_fk_film": id_film_selected,
-                                                               "value_fk_genre": IDEntrepot_del}
+                    valeurs_film_sel_genre_sel_dictionnaire = {"value_FKEntrepot": FKEntrepot,
+                                                               "value_FKPro": FKPro,
+                                                               "value_IDProEntrepot": IDProEntrepot}
 
                     # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
                     # la subtilité consiste à avoir une méthode "execute" dans la classe "DBconnection"
@@ -276,20 +278,20 @@ def genres_films_afficher_data(valeur_id_film_selected_dict):
     print("valeur_id_film_selected_dict...", valeur_id_film_selected_dict)
     try:
 
-        strsql_film_selected = """SELECT IDPro, ProNom, ProPrixFR, cover_link_film, date_sortie_film, GROUP_CONCAT(IDEntrepot) as GenresFilms FROM t_produit_stocker_entrepot
+        strsql_film_selected = """SELECT IDPro, ProNom, ProPrixFR, ProPrixCH, ProEntrepotQuantité, GROUP_CONCAT(IDEntrepot) as ID FROM t_produit_stocker_entrepot
                                         INNER JOIN t_produit ON t_produit.IDPro = t_produit_stocker_entrepot.FKPro
                                         INNER JOIN t_entrepot ON t_entrepot.IDEntrepot = t_produit_stocker_entrepot.FKEntrepot
-                                        WHERE IDPro = %(value_id_film_selected)s"""
+                                        WHERE IDPro = %(value_IDPro_selected)s"""
 
         strsql_genres_films_non_attribues = """SELECT IDEntrepot, EntrepotNom FROM t_entrepot WHERE IDEntrepot not in(SELECT IDEntrepot as idGenresFilms FROM t_produit_stocker_entrepot
                                                     INNER JOIN t_produit ON t_produit.IDPro = t_produit_stocker_entrepot.FKPro
                                                     INNER JOIN t_entrepot ON t_entrepot.IDEntrepot = t_produit_stocker_entrepot.FKEntrepot
-                                                    WHERE IDPro = %(value_id_film_selected)s)"""
+                                                    WHERE IDPro = %(value_IDPro_selected)s)"""
 
         strsql_genres_films_attribues = """SELECT IDPro, IDEntrepot, EntrepotNom FROM t_produit_stocker_entrepot
                                             INNER JOIN t_produit ON t_produit.IDPro = t_produit_stocker_entrepot.FKPro
                                             INNER JOIN t_entrepot ON t_entrepot.IDEntrepot = t_produit_stocker_entrepot.FKEntrepot
-                                            WHERE IDPro = %(value_id_film_selected)s"""
+                                            WHERE IDPro = %(value_IDPro_selected)s"""
 
         # Du fait de l'utilisation des "context managers" on accède au curseur grâce au "with".
         with DBconnection() as mc_afficher:

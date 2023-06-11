@@ -28,13 +28,15 @@ CREATE TABLE IF NOT EXISTS `t_categorie` (
   PRIMARY KEY (`IDCate`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table unger_corentin_i164_info1a.t_categorie : ~2 rows (environ)
+-- Listage des données de la table unger_corentin_i164_info1a.t_categorie : ~5 rows (environ)
 INSERT INTO `t_categorie` (`IDCate`, `CateNom`) VALUES
 	(1, 'Protéines'),
 	(2, 'Vitamines'),
-	(3, 'Vêtements & Accessoires');
+	(3, 'Vêtements & Accessoires'),
+	(4, 'Boissons'),
+	(5, 'Snacks');
 
--- Listage de la structure de table unger_corentin_i164_info1a. t_commande...
+-- Listage de la structure de table unger_corentin_i164_info1a. t_commande
 DROP TABLE IF EXISTS `t_commande`;
 CREATE TABLE IF NOT EXISTS `t_commande` (
   `IDCom` int NOT NULL AUTO_INCREMENT,
@@ -47,17 +49,21 @@ CREATE TABLE IF NOT EXISTS `t_commande` (
 DROP TABLE IF EXISTS `t_entrepot`;
 CREATE TABLE IF NOT EXISTS `t_entrepot` (
   `IDEntrepot` int NOT NULL AUTO_INCREMENT,
-  `IDLo` int NOT NULL,
-  `EntrepotNom` varchar(20) NOT NULL,
-  `EntrepotAdresse` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `IDLo` int DEFAULT NULL,
+  `EntrepotNom` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
+  `EntrepotAdresse` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   PRIMARY KEY (`IDEntrepot`),
   KEY `FOREIGN KEY` (`IDLo`),
   CONSTRAINT `FK_t_entrepot_t_localite` FOREIGN KEY (`IDLo`) REFERENCES `t_localite` (`IDLo`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table unger_corentin_i164_info1a.t_entrepot : ~1 rows (environ)
+-- Listage des données de la table unger_corentin_i164_info1a.t_entrepot : ~5 rows (environ)
 INSERT INTO `t_entrepot` (`IDEntrepot`, `IDLo`, `EntrepotNom`, `EntrepotAdresse`) VALUES
-	(1, 1, 'Maison', '1 rue du stade');
+	(1, 1, 'Maison', '4 rue du stade'),
+	(2, 3, 'Appart Suisse', '29 Av des Paquis'),
+	(5, 1, 'Garage', '5 rue du stade'),
+	(6, 3, 'Hangar', '3 Av des Paquis'),
+	(7, 1, 'Garage Nord', '6 rue du stade');
 
 -- Listage de la structure de table unger_corentin_i164_info1a. t_fournisseur
 DROP TABLE IF EXISTS `t_fournisseur`;
@@ -117,9 +123,13 @@ CREATE TABLE IF NOT EXISTS `t_localite` (
   CONSTRAINT `FK_t_localite_t_pays` FOREIGN KEY (`IDPa`) REFERENCES `t_pays` (`IDPa`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table unger_corentin_i164_info1a.t_localite : ~0 rows (environ)
+-- Listage des données de la table unger_corentin_i164_info1a.t_localite : ~5 rows (environ)
 INSERT INTO `t_localite` (`IDLo`, `IDPa`, `LOCodePostal`, `LOCanton`, `LORegion`) VALUES
-	(1, 1, 1222, 'efef', NULL);
+	(1, 1, 25460, '', 'Franche-Comté'),
+	(2, 1, 25400, NULL, 'Franche-Comté'),
+	(3, 2, 1110, 'Vaud', NULL),
+	(4, 2, 1100, 'Vaud', NULL),
+	(5, 3, 32004, NULL, 'Mendes');
 
 -- Listage de la structure de table unger_corentin_i164_info1a. t_marque
 DROP TABLE IF EXISTS `t_marque`;
@@ -129,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `t_marque` (
   PRIMARY KEY (`IDMarque`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table unger_corentin_i164_info1a.t_marque : ~0 rows (environ)
+-- Listage des données de la table unger_corentin_i164_info1a.t_marque : ~1 rows (environ)
 INSERT INTO `t_marque` (`IDMarque`, `MarqueNom`) VALUES
 	(1, 'Bulk');
 
@@ -141,9 +151,13 @@ CREATE TABLE IF NOT EXISTS `t_pays` (
   PRIMARY KEY (`IDPa`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table unger_corentin_i164_info1a.t_pays : ~0 rows (environ)
+-- Listage des données de la table unger_corentin_i164_info1a.t_pays : ~5 rows (environ)
 INSERT INTO `t_pays` (`IDPa`, `PaNom`) VALUES
-	(1, 'Test');
+	(1, 'France'),
+	(2, 'Suisse'),
+	(3, 'Espagne'),
+	(4, 'Portugal'),
+	(5, 'Italie');
 
 -- Listage de la structure de table unger_corentin_i164_info1a. t_personne
 DROP TABLE IF EXISTS `t_personne`;
@@ -176,19 +190,19 @@ CREATE TABLE IF NOT EXISTS `t_produit` (
   CONSTRAINT `FK_t_produit_t_marque` FOREIGN KEY (`FKMarque`) REFERENCES `t_marque` (`IDMarque`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=1122 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table unger_corentin_i164_info1a.t_produit : ~63 rows (environ)
+-- Listage des données de la table unger_corentin_i164_info1a.t_produit : ~64 rows (environ)
 INSERT INTO `t_produit` (`IDPro`, `FKCate`, `FKMarque`, `ProNom`, `ProPrixFR`, `ProPrixCH`) VALUES
 	(1, 1, 1, 'Protéine Whey en Poudre', 22.000000, 26.000000),
 	(2, 1, 1, 'L\'isolat de Whey', 30.000000, 34.000000),
 	(856, 1, 1, 'Protéine Vegan en Poudre', 21.000000, NULL),
-	(857, NULL, 1, 'Collagène et vitamine C', 28.000000, NULL),
-	(858, NULL, 1, 'Clear Whey Isolate', 31.000000, NULL),
-	(859, NULL, 1, 'Isolat de Protéine de Pois', 13.000000, NULL),
-	(860, NULL, 1, 'Protéines véganes gourmet', 32.000000, 33.000000),
-	(861, NULL, 1, 'Brownie Protéiné Vegan', 3.000000, NULL),
-	(862, NULL, 1, 'Vegan Mass Gainer', 56.000000, 56.000000),
-	(863, NULL, 1, 'Oméga-3 6 9 végétaliens - Huile d’Ahiflower 750mg', 30.000000, 30.000000),
-	(864, NULL, 1, 'Protéine Clear Vegan', 33.000000, NULL),
+	(857, 2, 1, 'Collagène et vitamine C', 28.000000, NULL),
+	(858, 1, 1, 'Clear Whey Isolate', 31.000000, NULL),
+	(859, 1, 1, 'Isolat de Protéine de Pois', 13.000000, NULL),
+	(860, 1, 1, 'Protéines véganes gourmet', 32.000000, 33.000000),
+	(861, 5, 1, 'Brownie Protéiné Vegan', 3.000000, NULL),
+	(862, 1, 1, 'Vegan Mass Gainer', 56.000000, 56.000000),
+	(863, 2, 1, 'Oméga-3 6 9 végétaliens - Huile d’Ahiflower 750mg', 30.000000, 30.000000),
+	(864, 1, 1, 'Protéine Clear Vegan', 33.000000, NULL),
 	(865, NULL, 1, 'Tout-en-Un Végan', 80.000000, 80.000000),
 	(866, NULL, 1, 'Complexe multivitamines', 19.000000, NULL),
 	(867, NULL, 1, 'Gélules d\'Oméga 3 Haute Puissance 1000 mg', 22.000000, NULL),
@@ -240,23 +254,29 @@ INSERT INTO `t_produit` (`IDPro`, `FKCate`, `FKMarque`, `ProNom`, `ProPrixFR`, `
 	(1097, NULL, 1, 'Capsules en gélatine', 6.000000, 5.490000),
 	(1098, NULL, 1, 'Gourde de sport', 5.000000, NULL),
 	(1099, NULL, 1, 'Protection pour barre de squat', 12.490000, NULL),
-	(1100, NULL, 1, 'Boîte vide', 4.490000, NULL);
+	(1100, NULL, 1, 'Boîte vide', 4.490000, NULL),
+	(1122, NULL, NULL, 'hudew', 9.990000, NULL),
+	(1123, NULL, NULL, 'Beurre', 5.000000, 7.000000),
+	(1124, NULL, NULL, 'Beurre de cacahuette', 5.000000, 7.000000);
 
 -- Listage de la structure de table unger_corentin_i164_info1a. t_produit_stocker_entrepot
 DROP TABLE IF EXISTS `t_produit_stocker_entrepot`;
 CREATE TABLE IF NOT EXISTS `t_produit_stocker_entrepot` (
   `IDProEntrepot` int NOT NULL AUTO_INCREMENT,
-  `FKPro` int NOT NULL,
-  `FKEntrepot` int NOT NULL,
+  `FKPro` int DEFAULT NULL,
+  `FKEntrepot` int DEFAULT NULL,
   `ProEntrepotQuantité` int DEFAULT NULL,
   PRIMARY KEY (`IDProEntrepot`),
   KEY `FK_t_produit_stocker_entrepot_t_produit` (`FKPro`) USING BTREE,
   KEY `FK_t_produit_stocker_entrepot_t_entrepot` (`FKEntrepot`),
   CONSTRAINT `FK_t_produit_stocker_entrepot_t_entrepot` FOREIGN KEY (`FKEntrepot`) REFERENCES `t_entrepot` (`IDEntrepot`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `FK_t_produit_stocker_entrepot_t_produit` FOREIGN KEY (`FKPro`) REFERENCES `t_produit` (`IDPro`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
--- Listage des données de la table unger_corentin_i164_info1a.t_produit_stocker_entrepot : ~0 rows (environ)
+-- Listage des données de la table unger_corentin_i164_info1a.t_produit_stocker_entrepot : ~2 rows (environ)
+INSERT INTO `t_produit_stocker_entrepot` (`IDProEntrepot`, `FKPro`, `FKEntrepot`, `ProEntrepotQuantité`) VALUES
+	(1, 893, 1, 20),
+	(2, 856, 1, 12);
 
 -- Listage de la structure de table unger_corentin_i164_info1a. t_type
 DROP TABLE IF EXISTS `t_type`;
