@@ -5,23 +5,16 @@
 	<div class="row">
 		<div class="col-md-12">
 			<p>
-				Editer un GENRE
+				Editer une Categorie
 			</p>
 			<form action="" method="POST" novalidate>
 				<!-- Protection contre les attaques Cross-Site Request Forgery (CSRF) -->
 				{{ form_update.hidden_tag() }}
 				<div class="form-group">
 					<p>
-						{{ form_update.EntrepotNom_wtf.label }}<br>
-						{{ form_update.EntrepotNom_wtf(size=32) }}<br>
-						{% for error in form_update.EntrepotNom_wtf.errors %}
-							<span style="color: red;">[{{ error }}]</span>
-						{% endfor %}
-					</p>
-					<p>
-						{{ form_update.nom_Adresse_update_wtf.label }}<br>
-						{{ form_update.nom_Adresse_update_wtf(size=32) }}<br>
-						{% for error in form_update.nom_Adresse_update_wtf.errors %}
+						{{ form_update.CateNom_wtf.label }}<br>
+						{{ form_update.CateNom_wtf(size=32) }}<br>
+						{% for error in form_update.CateNom_wtf.errors %}
 							<span style="color: red;">[{{ error }}]</span>
 						{% endfor %}
 					</p>

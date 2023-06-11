@@ -109,6 +109,7 @@ def entrepot_ajouter_wtf():
                     "value_IDLo": IDLo_wtf,
                     "value_EntrepotNom": EntrepotNom_wtf,
                     "value_EntrepotAdresse": EntrepotAdresse_wtf,
+                    "value_localite_entrepot": request.form.get("value_localite_entrepot", "")  # Valeur par défaut ""
                 }
 
                 print("valeurs_insertion_dictionnaire ", valeurs_insertion_dictionnaire)
@@ -144,7 +145,7 @@ def entrepot_ajouter_wtf():
     
     But : Editer(update) un genre qui a été sélectionné dans le formulaire "entrepot_afficher.html"
     
-    Remarque :  Dans le champ "nom_entrepot_update_wtf" du formulaire "genres/entrepot_update_wtf.html",
+    Remarque :  Dans le champ "EntrepotNom_wtf" du formulaire "genres/entrepot_update_wtf.html",
                 le contrôle de la saisie s'effectue ici en Python.
                 On transforme la saisie en minuscules.
                 On ne doit pas accepter des valeurs vides, des valeurs avec des chiffres,
@@ -166,12 +167,12 @@ def entrepot_update_wtf():
         if form_update.validate_on_submit():
             # Récupèrer la valeur du champ depuis "entrepot_update_wtf.html" après avoir cliqué sur "SUBMIT".
             # Puis la convertir en lettres minuscules.
-            name_Entrepot_update = form_update.nom_Entrepot_update_wtf.data
+            name_Entrepot_update = form_update.EntrepotNom_wtf.data
             # name_Entrepot_update = name_Entrepot_update.lower()
-            date_genre_essai = form_update.date_genre_wtf_essai.data
+            date_genre_essai = form_update.nom_Adresse_update_wtf.data
 
             valeur_update_dictionnaire = {"value_IDEntrepot": IDEntrepot_update,
-                                          "value_name_genre": name_Entrepot_update,
+                                          "value_EntrepotNom": name_Entrepot_update,
                                           "value_date_genre_essai": date_genre_essai
                                           }
             print("valeur_update_dictionnaire ", valeur_update_dictionnaire)
@@ -200,8 +201,9 @@ def entrepot_update_wtf():
                   data_nom_genre["EntrepotNom"])
 
             # Afficher la valeur sélectionnée dans les champs du formulaire "entrepot_update_wtf.html"
-            form_update.nom_entrepot_update_wtf.data = data_nom_genre["EntrepotNom"]
-            form_update.date_genre_wtf_essai.data = data_nom_genre["EntrepotAdresse"]
+            form_update.EntrepotNom_wtf.data = data_nom_genre["EntrepotNom"]
+            form_update.nom_Adresse_update_wtf.data = data_nom_genre["EntrepotAdresse"]
+
 
     except Exception as Exception_entrepot_update_wtf:
         raise ExceptionGenreUpdateWtf(f"fichier : {Path(__file__).name}  ;  "
@@ -276,10 +278,10 @@ def entrepot_delete_wtf():
             print(IDEntrepot_delete, type(IDEntrepot_delete))
 
             # Requête qui affiche tous les films_genres qui ont le genre que l'utilisateur veut effacer
-            str_sql_genres_films_delete = """SELECT IDEntrepot_film, ProNom, IDEntrepot, EntrepotNom FROM t_produit_stocker_entrepot 
+            str_sql_genres_films_delete = """SELECT IDProEntrepot, ProNom, IDEntrepot, EntrepotNom FROM t_produit_stocker_entrepot 
                                             INNER JOIN t_produit ON t_produit_stocker_entrepot.FKPro = t_produit.IDPro
                                             INNER JOIN t_entrepot ON t_produit_stocker_entrepot.FKEntrepot = t_entrepot.IDEntrepot
-                                            WHERE fk_genre = %(value_IDEntrepot)s"""
+                                            WHERE FKEntrepot = %(value_IDEntrepot)s"""
 
             with DBconnection() as mydb_conn:
                 mydb_conn.execute(str_sql_genres_films_delete, valeur_select_dictionnaire)
@@ -314,4 +316,4 @@ def entrepot_delete_wtf():
     return render_template("entrepot/entrepot_delete_wtf.html",
                            form_delete=form_delete,
                            btn_submit_del=btn_submit_del,
-                           data_films_associes=data_films_attribue_genre_delete)
+                           data_categorie_associes=data_films_attribue_genre_delete)
