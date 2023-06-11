@@ -5,7 +5,7 @@ Le "début de la fin"
 
 Le projet consiste en une interface (HTML, FLASK, Python, etc.) et une BD MySql.
 
-Il s’agit d’une gestion des produits de la marque BeProt, montrant les type, les sujets abordés dans l’élaboration des TPI ainsi que des participants directs et indirectement. Soit un système CRUD (Create Read Update Delete) adapté aux besoin sur les 4 tables de la BD TPI : Soit “t_personne”; “t_sujet”; "t_themes"; "t_sujet_avoir_theme". Quels sont les prérequis pour faire fonctionner mon projet ? Un serveur MySql doit être installé • Heidi SQl (Laragon) ou XAMPP ou UWAMP • MAC : MAMP ou https://www.codeur.com/tuto/creation-de-site-internet/version-mysql/
+Il s’agit d’une gestion des produits de la marque BeProt, montrant les type, les categorie, le stockage dans les entrepôt de ce produits. Soit un système CRUD (Create Read Update Delete) adapté aux besoin sur les 4 tables de la BD BeProt : Soit “t_entrepot”; “t_categorie”; "t_produit"; "t_produit_stocker_entrepot". Quels sont les prérequis pour faire fonctionner mon projet ? Un serveur MySql doit être installé • Heidi SQl (Laragon) ou XAMPP ou UWAMP • MAC : MAMP ou https://www.codeur.com/tuto/creation-de-site-internet/version-mysql/
 
 Python doit être installé. • ATTENTION : Cocher la case pour que le “PATH” intègre le programme Python • Une fois la “case à cocher” du PATH cochée, il faut choisir d’installer • Un peu avant la fin du processus d’installation, cliquer sur “disabled length limit” et cliquer sur “CLOSE” • Le test de Python se fait après avec le programme “PyCharm” Installer “GIT” • https://gitforwindows.org/ • Le test de “GIT” se fait dans le programme “PyCharm”
 
@@ -50,7 +50,7 @@ Démarrer le microframework FLASK
 
 • Dans la console du “run” il doit y avoir un lien à cliquer de cette forme :
 
-o Running on http://127.0.0.1:5575/homepage
+o Running on http://127.0.0.1:5505/homepage
 
 • Cliquer dessus afin d'ouvrir dans votre navigateur mon projet Vous voici sur le visuel de mon projet final 
 
